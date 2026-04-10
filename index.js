@@ -15,17 +15,26 @@ if (req.body.request?.type === "IntentRequest") {
 } else if (req.body.request?.type === "LaunchRequest") {
   userInput = "hola";
 }
-
+console.log("USER INPUT:", userInput);
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        input: userInput
-      })
+body: JSON.stringify({
+  model: "gpt-4o-mini",
+input: [
+  {
+    role: "system",
+    content: "Eres un asistente de voz para Alexa. Responde SIEMPRE en español, de forma breve, clara y útil."
+  },
+  {
+    role: "user",
+    content: userInput
+  }
+]
+})
     });
 
     const data = await response.json();
