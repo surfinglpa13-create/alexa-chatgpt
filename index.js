@@ -5,8 +5,16 @@ app.use(express.json());
 
 app.post("/", async (req, res) => {
   try {
-    const userInput =
-      req.body.request?.intent?.slots?.text?.value || "hola";
+   let userInput = "hola";
+
+if (req.body.request?.type === "IntentRequest") {
+  userInput =
+    req.body.request.intent?.slots?.text?.value ||
+    req.body.request.intent?.name ||
+    "hola";
+} else if (req.body.request?.type === "LaunchRequest") {
+  userInput = "hola";
+}
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
