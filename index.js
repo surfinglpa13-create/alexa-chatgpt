@@ -1,17 +1,17 @@
 import express from "express";
-import fetch from "node-fetch";
 
 const app = express();
 app.use(express.json());
 
 app.post("/", async (req, res) => {
   try {
-    const userInput = req.body.request.intent.slots.text.value;
+    const userInput =
+      req.body.request?.intent?.slots?.text?.value || "hola";
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + process.env.OPENAI_API_KEY,
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -21,8 +21,13 @@ app.post("/", async (req, res) => {
     });
 
     const data = await response.json();
-const text = data.output?.[0]?.content?.[0]?.text || "No pude generar respuesta";
-    
+
+    console.log("OPENAI RESPONSE:", data);
+
+    const text =
+      data.output?.[0]?.content?.[0]?.text ||
+      "No pude generar respuesta";
+
     res.json({
       version: "1.0",
       response: {
@@ -33,8 +38,9 @@ const text = data.output?.[0]?.content?.[0]?.text || "No pude generar respuesta"
         shouldEndSession: false
       }
     });
-
   } catch (error) {
+    console.error("ERROR:", error);
+
     res.json({
       version: "1.0",
       response: {
@@ -47,4 +53,4 @@ const text = data.output?.[0]?.content?.[0]?.text || "No pude generar respuesta"
   }
 });
 
-app.listen(3000);
+app.listen(3000, () => console.log("Server running"));
