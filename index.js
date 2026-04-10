@@ -21,8 +21,8 @@ app.post("/", async (req, res) => {
     });
 
     const data = await response.json();
-    const text = data.output[0].content[0].text;
-
+const text = data.output?.[0]?.content?.[0]?.text || "No pude generar respuesta";
+    
     res.json({
       version: "1.0",
       response: {
