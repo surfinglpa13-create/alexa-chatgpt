@@ -24,10 +24,13 @@ app.post("/", async (req, res) => {
 
     console.log("OPENAI RESPONSE:", data);
 
-    const text =
-      data.output?.[0]?.content?.[0]?.text ||
-      "No pude generar respuesta";
+ let text = "No pude generar respuesta";
 
+if (data.output_text) {
+  text = data.output_text;
+} else if (data.output?.[0]?.content?.[0]?.text) {
+  text = data.output[0].content[0].text;
+}
     res.json({
       version: "1.0",
       response: {
